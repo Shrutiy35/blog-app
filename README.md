@@ -1,4 +1,4 @@
-# BLOG APPLICATION
+# BLOG NEST-BLOG APPLICATION
 
 # 🚀 Project Overview
 The blog application will allow users to create,read, update, and delete blog posts. There will be user authentication to manage who can create or edit posts. The application will have a clean and responsive user interface, making it accessible on both desktop and mobile devices.
