@@ -11,11 +11,10 @@ function UpdateBlog() {
   const [category, setCategory] = useState("");
   const [about, setAbout] = useState("");
 
-  const [blogImage, setBlogImage] = useState("");
+  const [blogImage, setBlogImage] = useState(null); // Change to null initially
   const [blogImagePreview, setBlogImagePreview] = useState("");
 
   const changePhotoHandler = (e) => {
-    console.log(e);
     const file = e.target.files[0];
     const reader = new FileReader();
     reader.readAsDataURL(file);
@@ -30,7 +29,6 @@ function UpdateBlog() {
       try {
         const { data } = await axios.get(
           `http://localhost:4001/api/blogs/single-blog/${id}`,
-
           {
             withCredentials: true,
             headers: {
@@ -42,10 +40,10 @@ function UpdateBlog() {
         setTitle(data?.title);
         setCategory(data?.category);
         setAbout(data?.about);
-        setBlogImage(data?.blogImage.url);
+        setBlogImagePreview(data?.blogImage.url); // Set the preview to the existing image URL
       } catch (error) {
         console.log(error);
-        toast.error("Please fill the required fields");
+        toast.error("Failed to fetch blog data");
       }
     };
     fetchBlog();
@@ -58,7 +56,11 @@ function UpdateBlog() {
     formData.append("category", category);
     formData.append("about", about);
 
-    formData.append("blogImage", blogImage);
+    // Only append the blogImage if a new image is selected
+    if (blogImage) {
+      formData.append("blogImage", blogImage);
+    }
+
     try {
       const { data } = await axios.put(
         `http://localhost:4001/api/blogs/update/${id}`,
@@ -76,7 +78,7 @@ function UpdateBlog() {
     } catch (error) {
       console.log(error);
       toast.error(
-        error.response.data.message || "Please fill the required fields"
+        error.response?.data?.message || "Please fill the required fields"
       );
     }
   };
@@ -86,7 +88,7 @@ function UpdateBlog() {
       <div className="container mx-auto my-12 p-4">
         <section className="max-w-2xl mx-auto">
           <h3 className="text-2xl font-bold mb-6">UPDATE BLOG</h3>
-          <form>
+          <form onSubmit={handleUpdate}>
             <div className="mb-4">
               <label className="block mb-2 font-semibold">Category</label>
               <select
@@ -112,13 +114,7 @@ function UpdateBlog() {
             <div className="mb-4">
               <label className="block mb-2 font-semibold">BLOG IMAGE</label>
               <img
-                src={
-                  blogImagePreview
-                    ? blogImagePreview
-                    : blogImage
-                    ? blogImage
-                    : "/imgPL.webp"
-                }
+                src={blogImagePreview ? blogImagePreview : "/imgPL.webp"}
                 alt="Blog Main"
                 className="w-full h-48 object-cover mb-4 rounded-md"
               />
@@ -131,14 +127,14 @@ function UpdateBlog() {
             <textarea
               rows="6"
               className="w-full p-2 mb-4 border rounded-md"
-              placeholder="Something about your blog atleast 200 characters!"
+              placeholder="Something about your blog at least 200 characters!"
               value={about}
               onChange={(e) => setAbout(e.target.value)}
             />
 
             <button
               className="w-full p-3 bg-blue-600 text-white rounded-md hover:bg-blue-700"
-              onClick={handleUpdate}
+              type="submit"
             >
               UPDATE
             </button>
