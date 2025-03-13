@@ -16,16 +16,12 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(
   cors({
-    origin: process.env.FRONTEND_URL,
+    origin: [
+      process.env.FRONTEND_URL,
+      "https://blog-app-frontend-nfw5.onrender.com",
+    ], // Add your deployed frontend URL here
     credentials: true,
-    // allowedHeaders: [
-    //   "Origin",
-    //   "X-Requested-With",
-    //   "Content-Type",
-    //   "Authorization",
-    // ],
     methods: ["GET", "POST", "PUT", "DELETE"],
-    // optionsSuccessStatus: 200,
   })
 );
 app.use(
