@@ -126,8 +126,16 @@ export const logout = (req, res) => {
 };
 
 export const getMyProfile = async (req, res) => {
-  const user = await req.user;
-  res.status(200).json({ user });
+  try {
+    const user = await req.user;
+    if (!user) {
+      return res.status(401).json({ message: "Unauthorized" });
+    }
+    res.status(200).json({ user });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ error: "Internal Server error" });
+  }
 };
 
 export const getAdmins = async (req, res) => {
