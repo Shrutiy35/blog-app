@@ -16,10 +16,7 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(
   cors({
-    origin: [
-      process.env.FRONTEND_URL,
-      "https://blog-app-frontend-nfw5.onrender.com",
-    ], // Add your deployed frontend URL here
+    origin: [process.env.FRONTEND_URL], // Add your deployed frontend URL here
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE"],
   })
